@@ -1,0 +1,15 @@
+#!/bin/bash
+
+#PARAMETER REGION
+motifdir="MotifsInUniprobe/";
+outdir="MotifsInMeme/"
+
+mkdir $outdir
+
+export PATH=$PATH:/homes6/kglass/meme/bin
+motiffiles=$(ls $motifdir)
+
+for mfile in $motiffiles
+do
+eval "uniprobe2meme "$motifdir$mfile" > "$outdir$mfile
+done
