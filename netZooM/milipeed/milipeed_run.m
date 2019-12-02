@@ -2,8 +2,10 @@ function[]=milipeed_run(start,stop)
 	%%screen qrsh -l matlab=1 -l h_vmem=100111M 
 	% exp=textread('gene_exp_v14.txt');
 	% clear all;clc;
+    % rnd(12); %seed
 	% clearvars -except beta
 	addpath(genpath('~/netZooM'));alpha = 0.1;
+	addpath(genpath('~/analyses/MILIPEED'));
 
 	disp('Reading in ppi data!');
 	[TF1, TF2, weight] = textread('ppi.txt', '%s%s%f');
@@ -19,7 +21,7 @@ function[]=milipeed_run(start,stop)
 	%% prepare motif info
 	[TF, gene, CG]=textread('MotifPriors/Motif3.txt', '%s%s%s'); %%690 x 21528
 	beta=textread('betas.clean_1436199620_V13.txt');
-	% beta=zeros(349826,160);
+	% beta=randn(349826,160);
 	CGname=textread('CGs.txt', '%s');
 	[f,loc]=ismember(CG, CGname);
 	TF=TF(f); gene=gene(f); %% 690 x 20173 %%restrict RegNet to beta CG list
@@ -30,7 +32,7 @@ function[]=milipeed_run(start,stop)
 	exp_subj= textread('EXP_patients.txt', '%s');
 	cg_subj= textread('CGpatients.txt', '%s');
 	[ff,locc]=ismember(cg_subj,exp_subj); %%restrict beta subjects to exp list
-
+	locc(locc==0) = [];
 	%% Build Coexpression matrix
 	disp('Reading in expression data!'); 
 	% [TF, gene, CG]=textread('MotifPriors/MotifPriorRefSeq_r10_p4_-750_250.txt', '%s%s%s');
@@ -49,6 +51,7 @@ function[]=milipeed_run(start,stop)
 	[w]=ismember(Genes, unique(gene)); %%restrict GeneCoReg to RegNet gene list
 
 	Exp=textread('gene_exp_v14.txt'); %%23627 x 151
+    % Exp=randn(23627,151);
 	Exp=Exp(w,:);
 	[NumGenes, NumConditions] = size(Exp);
 	fprintf('%d genes and %d conditions!\n', NumGenes, NumConditions); 
