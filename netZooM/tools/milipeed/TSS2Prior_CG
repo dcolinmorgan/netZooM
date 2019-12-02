@@ -1,0 +1,28 @@
+#!/bin/bash
+
+#PARAMETER REGION
+datadir="PromoSPmethPrior/"
+outtag="MotifPriors/MotifPriorRefSeq_mQTL_p4";
+tempdir="priortemp/";
+tssmax=250;
+tssmin=-750;
+
+# creates new empty tempdir, removing whatever was there before
+rm -r -I $tempdir
+mkdir $tempdir
+
+export PATH=$PATH:/homes6/kglass/meme/bin
+
+motiffiles=$(ls $datadir)
+
+for mfile in $motiffiles
+do
+mtag=$(eval "echo "$mfile" | cut -d _ -f1")
+echo $mtag
+eval "awk '{if(\$4<"$tssmax" && \$4>"$tssmin"){print \""$mtag"\"\"\t\"\$3\"\t\"\$2 > \"temp.txt\"}}' "$datadir$mfile
+eval "sort -u temp.txt > "$tempdir$mfile
+rm -I temp.txt
+done
+
+eval "cat "$tempdir"* > "$outtag"_"$tssmin"_"$tssmax
+rm -r -I $tempdir

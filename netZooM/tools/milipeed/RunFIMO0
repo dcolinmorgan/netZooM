@@ -1,0 +1,27 @@
+#!/bin/bash
+
+#PARAMETER REGION
+motifdir="SplitMotifs/Set0/"
+genomedir="/gcdata/data_download/hg19/"
+outdir="ScanResults/"
+bgfile="../Background/BackgroundFreqencies.txt";
+tempdir="temp0/";
+
+mkdir $tempdir
+mkdir $outdir
+
+export PATH=$PATH:/homes6/kglass/meme/bin
+
+fafiles=$(eval "ls "$genomedir"*.fa | cut -d / -f5 | cut -d . -f1 ")
+motiffiles=$(ls $motifdir)
+
+for mfile in $motiffiles
+do
+for fa in $fafiles
+do
+echo $fa
+eval "fimo --bgfile "$bgfile" --thresh 0.001 --text "$motifdir$mfile" "$genomedir$fa".fa > "$tempdir$fa
+done
+eval "cat "$tempdir"* > "$outdir$mfile
+eval "rm "$tempdir"*"
+done

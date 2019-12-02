@@ -1,0 +1,18 @@
+#!/bin/bash
+
+#PARAMETER REGION
+mapdir="../../../rekrg/EpiPANDA/FIMO_results/ScanResults/"
+beddir="ScanBedResults/"
+
+mkdir $beddir
+
+# mapfiles=$(eval "ls "$mapdir"*.txt | cut -d / -f2 | cut -d . -f1,2")
+mapfiles=$(eval ls $mapdir*.txt | cut -d / -f8 | cut -d . -f1,2)
+
+
+for mfile in $mapfiles
+do
+echo $mfile
+eval "sort -u "$mapdir$mfile".txt -k2,4 > temp.txt"
+eval "awk '{if(\$2 ~ /chr/){print \$2\"\t\"\$3\"\t\"\$4\"\t\"\$2\":\"\$3\"-\"\$4\"\t\"\$6\"\t\"\$5\"\t\"\$7 > \""$beddir$mfile".bed\"}}' temp.txt"
+done

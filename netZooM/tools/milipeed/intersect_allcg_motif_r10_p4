@@ -1,0 +1,18 @@
+#!/bin/bash
+
+#PARAMETER REGION
+datadir="ScanBedResults/"
+outdir="AllCGoverlap_r10_p4/";
+pcutoff=1e-4;
+
+# creates new empty tempdir, removing whatever was there before
+motiffiles=$(ls $datadir)
+
+for mfile in $motiffiles
+do
+mtag=$(eval "echo "$mfile" | cut -d _ -f1")
+echo $mtag
+eval "awk '{if(\$7<"$pcutoff"){print \$0 > \"temp.txt\"}}' "$datadir$mfile
+eval "bedtools intersect -a AllCGsonArray_p10.bed -b temp.txt > "$outdir$mtag"_CGs.bed"
+rm -I temp.txt
+done
